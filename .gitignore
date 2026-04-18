@@ -1,6 +1,5 @@
 # Local guides (not for version control)
 guide.md
-.gitignore
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
