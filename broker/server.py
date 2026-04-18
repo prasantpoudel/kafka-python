@@ -33,6 +33,12 @@ def list_topics():
     return topic_manager.list_topics()
 
 
+@app.get("/topics/{name}")
+def get_topic(name: str):
+    num_partitions = len(topic_manager.topic_partitions[name])
+    return JSONResponse(content={"name": name, "num_partitions": num_partitions})
+
+
 @app.delete("/topics/{name}")
 def delete_topic(name: str):
     topic_manager.delete_topic(name=name)
