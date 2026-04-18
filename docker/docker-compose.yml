@@ -1,0 +1,62 @@
+version: "3.9"
+
+services:
+  broker-1:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    container_name: broker-1
+    environment:
+      BROKER_ID: "1"
+      BROKER_HOST: "broker-1"
+      BROKER_PORT: "9092"
+    ports:
+      - "9092:9092"
+    volumes:
+      - broker1-logs:/var/kafka/logs
+      - ../config/broker.yaml:/app/config/broker.yaml
+    networks:
+      - kafka-net
+
+  broker-2:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    container_name: broker-2
+    environment:
+      BROKER_ID: "2"
+      BROKER_HOST: "broker-2"
+      BROKER_PORT: "9092"
+    ports:
+      - "9093:9092"
+    volumes:
+      - broker2-logs:/var/kafka/logs
+      - ../config/broker.yaml:/app/config/broker.yaml
+    networks:
+      - kafka-net
+
+  broker-3:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    container_name: broker-3
+    environment:
+      BROKER_ID: "3"
+      BROKER_HOST: "broker-3"
+      BROKER_PORT: "9092"
+    ports:
+      - "9094:9092"
+    volumes:
+      - broker3-logs:/var/kafka/logs
+      - ../config/broker.yaml:/app/config/broker.yaml
+    networks:
+      - kafka-net
+
+volumes:
+  broker1-logs:
+  broker2-logs:
+  broker3-logs:
+
+networks:
+  kafka-net:
+    driver: bridge

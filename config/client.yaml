@@ -1,0 +1,20 @@
+bootstrap_brokers:
+  - "broker-1:9092"
+  - "broker-2:9092"
+  - "broker-3:9092"
+
+producer:
+  acks: "all"                  # 0 | 1 | all
+  batch_size_bytes: 16384      # 16 KB
+  linger_ms: 5                 # wait up to 5ms to fill a batch
+  compression: "none"          # none | gzip | snappy
+  retries: 3
+  idempotent: true
+
+consumer:
+  group_id: "my-group"
+  auto_offset_reset: "earliest"   # earliest | latest
+  auto_commit: true
+  auto_commit_interval_ms: 5000
+  max_poll_records: 500
+  session_timeout_ms: 30000
