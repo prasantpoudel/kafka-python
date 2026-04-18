@@ -6,6 +6,10 @@ __pycache__/
 *.py[codz]
 *$py.class
 
+# Local
+graphify-out
+architecture.md
+
 # C extensions
 *.so
 

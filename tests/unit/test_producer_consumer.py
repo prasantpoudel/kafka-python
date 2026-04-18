@@ -16,13 +16,13 @@ def setup():
 
 def test_producer_send_returns_offset(setup):
     tm, producer, consumer = setup
-    offset = producer.send("orders", b"hello")
+    offset, partition_id = producer.send("orders", b"hello")
     assert offset == 0
 
 
 def test_producer_auto_creates_topic(setup):
     tm, producer, consumer = setup
-    offset = producer.send("delivery", b"test_delivery")
+    offset, _ = producer.send("delivery", b"test_delivery")
     assert offset == 0
     assert "delivery" in tm.topics
 
