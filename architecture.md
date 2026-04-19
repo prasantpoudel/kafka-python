@@ -123,6 +123,7 @@ DELETE /topics/{name}                 → delete topic
 POST   /produce/{topic}               → send message, returns offset
 GET    /consume/{topic}/{partition_id} → poll messages, returns list
 POST   /commit/{topic}/{partition_id}  → commit offset for a consumer group
+POST   /internal/metadata             → receive metadata snapshot from controller (broker-to-broker only)
 ```
 
 **Why FastAPI over raw TCP:**
