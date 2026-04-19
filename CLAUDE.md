@@ -76,3 +76,12 @@ docker/          Dockerfile and docker-compose.yml for running a 3-broker cluste
 - **No external metadata service** — the controller broker manages all metadata internally and propagates changes to peers over the same broker network.
 - **Append-only log** — each partition is stored as a series of rolling segment files on disk; reads are offset-based against an index.
 - **Config via YAML + env vars** — `config/broker.yaml` holds defaults; Docker env vars (`BROKER_ID`, `BROKER_HOST`, `BROKER_PORT`) override per-instance values so the same image runs as any broker in the cluster.
+
+## graphify
+
+This project has a graphify knowledge graph at graphify-out/.
+
+Rules:
+- Before answering architecture or codebase questions, read graphify-out/GRAPH_REPORT.md for god nodes and community structure
+- If graphify-out/wiki/index.md exists, navigate it instead of reading raw files
+- After modifying code files in this session, run `graphify update .` to keep the graph current (AST-only, no API cost)

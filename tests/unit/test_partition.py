@@ -5,8 +5,8 @@ from protocol.message import Message
 
 
 @pytest.fixture
-def partition():
-    return Partition(partition_id=0)
+def partition(tmp_path):
+    return Partition(partition_id=0, data_dir=tmp_path)
 
 
 def test_append_assigns_offset(partition):

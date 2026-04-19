@@ -1,5 +1,6 @@
 # Local guides (not for version control)
 guide.md
+architecture.md
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

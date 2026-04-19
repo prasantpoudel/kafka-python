@@ -1,3 +1,6 @@
+import os
+from pathlib import Path
+
 from fastapi import FastAPI
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel
@@ -7,7 +10,9 @@ from client.consumer import Consumer
 from client.producer import Producer
 
 app = FastAPI()
-topic_manager = TopicManager()
+
+data_dir = Path(os.getenv("KAFKA_LOG_DIR", "/tmp/kafka-logs"))
+topic_manager = TopicManager(data_dir=data_dir)
 consumer = Consumer(topic_manager, group_id="default")
 producer = Producer(topic_manager)
 
