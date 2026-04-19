@@ -5,6 +5,7 @@ from fastapi import FastAPI
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 
+from broker.metadata.store import MetadataStore
 from broker.topic.manager import TopicManager
 from client.consumer import Consumer
 from client.producer import Producer
@@ -15,6 +16,7 @@ data_dir = Path(os.getenv("KAFKA_LOG_DIR", "/tmp/kafka-logs"))
 topic_manager = TopicManager(data_dir=data_dir)
 consumer = Consumer(topic_manager, group_id="default")
 producer = Producer(topic_manager)
+metadata_store = MetadataStore()
 
 
 class ProduceRequest(BaseModel):
@@ -25,6 +27,11 @@ class ProduceRequest(BaseModel):
 class TopicRequest(BaseModel):
     name: str
     num_partitions: int = 3
+
+
+class MetadataSnapshot(BaseModel):
+    topics: dict
+    partitions: dict
 
 
 @app.post("/topics")
@@ -80,3 +87,35 @@ def consume(topic: str, partition_id: int, limit: int = 10):
 def commit(topic: str, partition_id: int):
     consumer.commit(topic, partition_id)
     return JSONResponse(content={"status": "committed"}, status_code=200)
+
+
+@app.post("/internal/metadata")
+def receive_metadata(snapshot: MetadataSnapshot):
+    # Controller pushes metadata updates here so this broker stays in sync.
+    for name, num_partitions in snapshot.topics.items():
+        if name not in metadata_store.get_topics():
+            metadata_store.add_topic(name, num_partitions, replicas=[])
+    return JSONResponse(content={"status": "ok"}, status_code=200)
+
+
+class ReplicateRequest(BaseModel):
+    offset: int
+    value: str
+    key: str | None = None
+    timestamp: float
+
+
+@app.post("/internal/replicate/{topic}/{partition_id}")
+def receive_replication(topic: str, partition_id: int, request: ReplicateRequest):
+    # Leader pushes each written message here so the follower applies it to its local log.
+    from protocol.message import Message
+
+    message = Message(
+        value=request.value.encode("utf-8"),
+        key=request.key.encode("utf-8") if request.key else None,
+        offset=request.offset,
+        timestamp=request.timestamp,
+    )
+    partition = topic_manager.get_partitions(topic)[partition_id]
+    partition.append(message)
+    return JSONResponse(content={"status": "ok"}, status_code=200)
