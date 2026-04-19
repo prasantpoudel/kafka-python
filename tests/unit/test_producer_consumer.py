@@ -6,8 +6,8 @@ from client.producer import Producer
 
 
 @pytest.fixture
-def setup():
-    tm = TopicManager()
+def setup(tmp_path):
+    tm = TopicManager(data_dir=tmp_path)
     tm.create_topic("orders", num_partitions=3)
     producer = Producer(tm)
     consumer = Consumer(tm, group_id="group-1")
