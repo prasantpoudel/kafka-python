@@ -4,8 +4,8 @@ from broker.topic.manager import TopicManager
 
 
 @pytest.fixture
-def topic_manager():
-    return TopicManager()
+def topic_manager(tmp_path):
+    return TopicManager(data_dir=tmp_path)
 
 
 def test_create_topic(topic_manager):

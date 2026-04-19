@@ -1,10 +1,12 @@
 import hashlib
+from pathlib import Path
 
 from broker.topic.partition import Partition
 
 
 class TopicManager:
-    def __init__(self):
+    def __init__(self, data_dir: Path):
+        self.data_dir = data_dir
         self.topics: set[str] = set()
         self.topic_partitions = {}
         self.topics_counter = {}
@@ -13,7 +15,10 @@ class TopicManager:
         if name in self.topics:
             return
         self.topics.add(name)
-        self.topic_partitions[name] = [Partition(partition_id=i) for i in range(num_partitions)]
+        self.topic_partitions[name] = [
+            Partition(partition_id=i, data_dir=self.data_dir / name / str(i))
+            for i in range(num_partitions)
+        ]
         self.topics_counter[name] = 0
 
     def get_partitions(self, topic: str) -> list[Partition]:
